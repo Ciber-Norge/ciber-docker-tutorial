@@ -31,4 +31,7 @@ docker pull ubuntu
 ```
 
 ## Her skriver vi litt om at endringer blir lagret i containeren. 
-TODO installere noe med apt-get og bruke det i containeren etterpå. 
+* TODO installere noe med apt-get og bruke det i containeren etterpå.
+* TODO finne containeren docker ps -l
+* TODO lagre med docker commit
+
