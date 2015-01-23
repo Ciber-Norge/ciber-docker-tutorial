@@ -30,3 +30,5 @@ Som du ser i resultatet så finner du flere dockercontainere, hvor noen er marke
 docker pull ubuntu
 ```
 
+## Her skriver vi litt om at endringer blir lagret i containeren. 
+TODO installere noe med apt-get og bruke det i containeren etterpå. 
