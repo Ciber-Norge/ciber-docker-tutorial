@@ -20,9 +20,13 @@ sudo docker run hello-world
 Dette starter en kontainer basert på imaget hello-world. Imaget inneholder instruksjoner om å kjøre en kommando som skriver ut teksten som kommer opp.
 ##Starte en interaktiv kontainer
  
-## Søke
-Image 'ubuntu' som du kjørte istad  ble hentet fra et Docker repostiory. Man kan søke i dette med *docker search 'navn'*. Så for å søke etter ubuntu kjør følgende:
+## Search/pull
+Image 'ubuntu' som du kjørte istad  ble hentet fra et Docker repository. Man kan søke i dette med *docker search 'navn'*. Så for å søke etter ubuntu kjør følgende:
 ```sh
 docker search ubuntu
 ```
-Som du ser i resultatet så finner du flere dockercontainere, hvor noen er markert som official.
+Som du ser i resultatet så finner du flere dockercontainere, hvor noen er markert som official. Ønsker du å laste ned image uten å kjøre det kan det gjøres med *docker pull 'navn'*.
+```sh
+docker pull ubuntu
+```
+
