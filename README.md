@@ -36,9 +36,18 @@ root        10  0.0  0.0  15568  1132 ?        R+   13:33   0:00 ps aux
 Dette viser alle kjørende prosesser. Dersom tilsvarende kommando blir kjørt utenfor en container vil listen være mye lengre. Dette viser at prosessene som kjører i en container er isolert fra hosten som containeren kjører på.
 
  
-## Søke
-Image 'ubuntu' som du kjørte istad  ble hentet fra et Docker repostiory. Man kan søke i dette med *docker search 'navn'*. Så for å søke etter ubuntu kjør følgende:
+## Search/pull
+Image 'ubuntu' som du kjørte istad  ble hentet fra et Docker repository. Man kan søke i dette med *docker search 'navn'*. Så for å søke etter ubuntu kjør følgende:
 ```sh
 docker search ubuntu
 ```
-Som du ser i resultatet så finner du flere dockercontainere, hvor noen er markert som official.
+Som du ser i resultatet så finner du flere dockercontainere, hvor noen er markert som official. Ønsker du å laste ned image uten å kjøre det kan det gjøres med *docker pull 'navn'*.
+```sh
+docker pull ubuntu
+```
+
+## Her skriver vi litt om at endringer blir lagret i containeren. 
+* TODO installere noe med apt-get og bruke det i containeren etterpå.
+* TODO finne containeren docker ps -l
+* TODO lagre med docker commit
+
