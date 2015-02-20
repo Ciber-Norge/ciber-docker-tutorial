@@ -161,6 +161,43 @@ I kolonnen PORTS kan vi se at port 49153 på vertsmaskinen har blitt mappet til 
 Så la oss peke webbrowseren vår til port 49153 å se om vi får kontakt med webapplikasjonen. 
 ![](https://github.com/Ciber-Norge/ciber-docker-tutorial/blob/master/bilder/tomcat.png)
 
+##Start, Stop og Restart av containere.
+Vi har til nå sett på hvordan vi kan starte en ny instans av en container basert på et image ved hjelp av kommandoen ```docker run```. Vi har også vært innom at man kan stoppe containeren ved hjelp av ```docker stop```. Vi stopper den kjørende tomcat containeren.
+
+```sh
+➜  ~  docker stop jovial_mayer
+jovial_mayer
+```
+Containeren er nå stoppet. Det kan evt. verifiseres med ```docker ps```
+For å starte den samme instansen av containeren på nytt kan man benytte kommandoen ```docker start```
+
+```sh
+➜  ~  docker start jovial_mayer
+jovial_mayer
+```
+Kjør kommandoen ```docker ps -l``` for å verifisere at containeren er oppe og kjører igjen.
+
+>**Merk:** kommandoen ```docker restart``` er også tilgjengelig for å restarte en container. 
+
+##Sletting av containere
+Du er ferdig med containeren din og har ikke lenger bruk for den. Da er det på tide å fjerne den fra vertsmaskinen. La oss slette den med ```docker rm```.
+
+```sh
+➜  ~  docker rm jovial_mayer
+Error response from daemon: You cannot remove a running container. Stop the container before attempting removal or use -f
+2015/02/20 12:25:04 Error: failed to remove one or more containers
+```
+Hva skjedde? Man kan ikke slette en kjørende container. Dette hindrer deg fra utilsiktet sletting av kjørende containere som man har behov for å beholde. Vi prøver på nytt etter å ha stoppet containeren.
+
+```sh
+➜  ~  docker stop jovial_mayer
+jovial_mayer
+➜  ~  docker rm jovial_mayer
+jovial_mayer
+```
+Containeren er nå slettet og kan ikke startes igjen ved hjelp av ```docker start```. Hvis man har behov for en tomcat-container må man fyre opp en ny instans igjen med ```docker run```
+
+>**Merk:** Sletting av en container kan ikke reverseres. 
 
 ## Lagre container state
 Forsøk å starte ubuntu containeren og si at den skal finne veien til en av google sine dns servere.
