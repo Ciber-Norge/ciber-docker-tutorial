@@ -159,6 +159,7 @@ be83b545716b        tomcat:8            "catalina.sh run"   10 seconds ago      
 I kolonnen PORTS kan vi se at port 49153 på vertsmaskinen har blitt mappet til port 8080 i containeren. Som dere kan se, så har vi brukt flagget ```-l```. Det forteller docker at bare informasjon om sist startet container skal listes ut.
 
 Så la oss peke webbrowseren vår til port 49153 å se om vi får kontakt med webapplikasjonen. 
+![](https://github.com/Ciber-Norge/ciber-docker-tutorial/blob/master/bilder/tomcat.png)
 
 
 ## Lagre container state
@@ -178,7 +179,7 @@ $ sudo docker ps -l
 CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS                      PORTS               NAMES
 a6a5ca03fa27        ubuntu:latest       "/bin/sh -c 'apt-get   3 weeks ago         Exited (0) 18 seconds ago                       insane_feynman
 ```
-En unik del av iden må angis for å commite, du trenger som regel ikke angi hele. For å se alle argumenter commit støtter kan du kjøre commit uten argumenter.
+En unik del av iden må angis for å commite, du trenger som regel ikke angi hele. For å se alle argumenter commit støtter kan du kjøre commit uten argumenter.
 ```sh
 $ docker commit
 
