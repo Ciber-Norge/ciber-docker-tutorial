@@ -159,7 +159,7 @@ be83b545716b        tomcat:8            "catalina.sh run"   10 seconds ago      
 I kolonnen PORTS kan vi se at port 49153 på vertsmaskinen har blitt mappet til port 8080 i containeren. Som dere kan se, så har vi brukt flagget ```-l```. Det forteller docker at bare informasjon om sist startet container skal listes ut.
 
 Så la oss peke webbrowseren vår til port 49153 å se om vi får kontakt med webapplikasjonen.
-![https://github.com/Ciber-Norge/ciber-docker-tutorial/blob/master/bilder/tomcat.png] 
+![](https://github.com/Ciber-Norge/ciber-docker-tutorial/blob/master/bilder/tomcat.png)
 
 
 ## Her skriver vi litt om at endringer blir lagret i containeren. 
