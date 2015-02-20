@@ -121,6 +121,44 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 # Jobbe med containere
 Containerene vi har jobbet med til nå har ikke vært veldig nyttige. Så la oss se hvordan man jobber med docker i forbindelse med mer nyttige ting.
 ## Kjøre en webapplikasjon i docker
+For vår "webapplikasjon" skal vi benytte en standard Tomcat container. La oss starte med ```docker run``` kommandoen.
+
+```sh
+➜  ~  docker run -d -P tomcat
+Unable to find image 'tomcat' locally
+Pulling repository tomcat
+b5e4c1b6e097: Download complete 
+511136ea3c5a: Download complete 
+8771fbfe935c: Download complete 
+0e30e84e9513: Download complete 
+c90a56bfe7dd: Download complete 
+4b976fb59d87: Download complete 
+e43216966b96: Download complete 
+1d1873aa2b8d: Download complete 
+834592b9ae6e: Download complete 
+518febcc1732: Download complete 
+0ada0f19a068: Download complete 
+dd68d8361188: Download complete 
+63eb73f7c69c: Download complete 
+fd2a9faea586: Download complete 
+f3f50ba5de3b: Download complete 
+05b935ac2d88: Download complete 
+6c76a7473765: Download complete 
+fd380d9fb669: Download complete 
+a76d5b92b4cd: Download complete 
+Status: Downloaded newer image for tomcat:latest
+be83b545716b7b83b6ce18fff7e8b6d21bbb48f2c07563a954b53030ee1b18ff
+```
+La oss ta en titt på hva kommandoen gjorde. Vi har spesifisert to flag: ```-d``` og ```-P```. Vi har allerede sett hva ```-d``` gjør. ```-P``` er ny og forteller docker at interne exponerte porter i containeren skal eksponeres på vertsmaskinen. Uten ```-P``` vil vi ikke kunne nå tomcat på innsiden av containeren. La oss ta en titt på containeren vår med ```docker ps```.
+
+```sh
+➜  ~ docker ps -l
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS                     NAMES
+be83b545716b        tomcat:8            "catalina.sh run"   10 seconds ago      Up 9 seconds        0.0.0.0:49153->8080/tcp   jovial_mayer        
+```
+I kolonnen PORTS kan vi se at port 49153 på vertsmaskinen har blitt mappet til port 8080 i containeren. Som dere kan se, så har vi brukt flagget ```-l```. Det forteller docker at bare informasjon om sist startet container skal listes ut.
+
+Så la oss peke webbrowseren vår til port 49153 å se om vi får kontakt med webapplikasjonen. 
 
 
 ## Her skriver vi litt om at endringer blir lagret i containeren. 
