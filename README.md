@@ -1,4 +1,4 @@
-# ciber-docker-tutorial
+# Introduksjon til containere
 Ciber Docker Tutorial
 
 ## Hva er Docker?
@@ -89,10 +89,10 @@ Stopp en halv. Hvorfor ser vi ikke "hello world"? Vi kjørte ```docker run``` me
 CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES
 3b0ec9ade035        ubuntu:latest       "/bin/sh -c 'while t   21 seconds ago      Up 21 seconds                           hopeful_thompson    
 ```
-I følge ```docker ps``` så kjører containeren vår. La oss inspisere den ved å se hva som har blitt skrevet til stdout. Dette gjøres ved kommandoen ```docker logs```.
+I følge ```docker ps``` så kjører containeren vår. La oss inspisere den ved å se hva som har blitt skrevet til stdout. Dette gjøres ved kommandoen ```docker logs```. ```docker ps``` gir oss i dette tilfellet et generert navn for containeren. Navn er som regel enklere å jobbe med enn ID'er. Vi benytter derfor nå navnet for å inspisere containeren videre.
 
 ```sh
-➜  ~  docker logs 3b0ec9ade035
+➜  ~  docker logs hopeful_thompson
 hello world
 hello world
 hello world
@@ -102,7 +102,26 @@ hello world
 hello world
 hello world
 ``` 
-Så resultatet ble som forventet. Ved hjelp av kommandoen ```docker logs``` kan vi altså inspisere stdout til en container.
+Så resultatet ble som forventet. Ved hjelp av kommandoen ```docker logs``` kan vi altså inspisere stdout til en container. Dersom man ønsker å manuelt tilordne et navn til en container så kan man gjøre det ved hjelp av flagget ```-name```.
+
+Hvis vi ikke gjør noe med den kjørende containeren vil den kjøre til vertsmaskinen stopper.
+For å stoppe den kjørende containeren bruker vi ```docker stop```.
+
+```sh
+➜ ~ docker stop hopeful_thompson
+hopeful_thompson
+```
+En kjapp sjekk på hvilke docker containere som kjører på vertsmaskinen viser at containeren er stoppet.
+
+```sh
+➜  ~  docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+
+# Jobbe med containere
+Containerene vi har jobbet med til nå har ikke vært veldig nyttige. Så la oss se hvordan man jobber med docker i forbindelse med mer nyttige ting.
+## Kjøre en webapplikasjon i docker
+
 
 ## Her skriver vi litt om at endringer blir lagret i containeren. 
 * TODO installere noe med apt-get og bruke det i containeren etterpå.
