@@ -250,5 +250,5 @@ traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
 ```
 Du bør nå ha en forståelse av hvordan man kan endre state i et image og lagre endringen. 
 
-#Lage container basert på ```Dockerfile```
+##Lage container basert på ```Dockerfile```
 
