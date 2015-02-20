@@ -38,11 +38,11 @@ Dette viser alle kjørende prosesser. Dersom tilsvarende kommando blir kjørt ut
 ## Search/pull
 Image 'ubuntu' som du kjørte istad  ble hentet fra et Docker repository. Man kan søke i dette med *docker search 'navn'*. Så for å søke etter ubuntu kjør følgende:
 ```sh
-docker search ubuntu
+$ docker search ubuntu
 ```
 Som du ser i resultatet så finner du flere dockercontainere, hvor noen er markert som official. Ønsker du å laste ned image uten å kjøre det kan det gjøres med *docker pull 'navn'*.
 ```sh
-docker pull ubuntu
+$ docker pull ubuntu
 ```
 ## Liste imagene som ligger lokalt
 For å liste ut imagene som ligger lokalt på maskinen benytter man kommandoen ``` sudo docker images```
@@ -158,12 +158,56 @@ be83b545716b        tomcat:8            "catalina.sh run"   10 seconds ago      
 ```
 I kolonnen PORTS kan vi se at port 49153 på vertsmaskinen har blitt mappet til port 8080 i containeren. Som dere kan se, så har vi brukt flagget ```-l```. Det forteller docker at bare informasjon om sist startet container skal listes ut.
 
-Så la oss peke webbrowseren vår til port 49153 å se om vi får kontakt med webapplikasjonen.
-![](https://github.com/Ciber-Norge/ciber-docker-tutorial/blob/master/bilder/tomcat.png)
+Så la oss peke webbrowseren vår til port 49153 å se om vi får kontakt med webapplikasjonen. 
 
 
-## Her skriver vi litt om at endringer blir lagret i containeren. 
-* TODO installere noe med apt-get og bruke det i containeren etterpå.
-* TODO finne containeren docker ps -l
-* TODO lagre med docker commit
+## Lagre container state
+Forsøk å starte ubuntu containeren og si at den skal finne veien til en av google sine dns servere.
+```sh
+$ sudo docker run ubuntu traceroute 8.8.8.8
+```
+Den observante seer vil da se at systemet ikke finner traceroute. La oss derfor oppdatere indexen over tilgjengelige pakker og hente/installere traceroute.
+```sh
+$ sudo docker run ubuntu /bin/sh -c 'sudo apt-get update && sudo apt-get install -y traceroute'
+```
+I output ser du nå at apt-get oppdaterer index for de forskjellige repositoriene og installerer traceourte.
+Nå som du har installert traceroute er det en god ide å lagre endringene i containeren. I docker kalles dette commit, en operasjon som lagrer forskjellene fra det gamle til det nye imaget.
+For å commite trenger du iden til containeren du vil lagre. Denne kan du finne ved å kjøre følgende kommando.
+```sh
+$ sudo docker ps -l
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS                      PORTS               NAMES
+a6a5ca03fa27        ubuntu:latest       "/bin/sh -c 'apt-get   3 weeks ago         Exited (0) 18 seconds ago                       insane_feynman
+```
+En unik del av iden må angis for å commite, du trenger som regel ikke angi hele. For å se alle argumenter commit støtter kan du kjøre commit uten argumenter.
+```sh
+$ docker commit
 
+Usage: docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+
+Create a new image from a container's changes
+
+  -a, --author=""     Author (e.g., "John Hannibal Smith <hannibal@a-team.com>")
+  -m, --message=""    Commit message
+  -p, --pause=true    Pause container during commit
+```
+Vi lagrer imaget med navnet ciber/traceroute
+```sh
+$ docker commit a6a ciber/traceroute
+12111178563f5811fcac42320de24c9690b88e79967d26d337fce9eaa550202b
+```
+I outout vises IDen til den nye versjonen av imaget. Prøv nå å trace veien til google sin dns server med ditt nye image.
+```sh
+$ docker run ciber/traceroute traceroute 8.8.8.8
+traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
+ 1  172.17.42.1 (172.17.42.1)  0.092 ms  0.020 ms  0.016 ms
+ 2  10.0.2.2 (10.0.2.2)  5.628 ms  5.539 ms  5.517 ms
+ 3  * * *
+ 4  62.109.44.210 (62.109.44.210)  1139.202 ms  1139.190 ms  1139.186 ms
+ 5  62.109.44.217 (62.109.44.217)  1139.179 ms 62.109.44.213 (62.109.44.213)  1139.170 ms 62.109.44.105 (62.109.44.105)  1139.158 ms
+ 6  62.109.44.157 (62.109.44.157)  1139.146 ms  38.602 ms  38.597 ms
+ 7  62.109.44.153 (62.109.44.153)  38.621 ms  13.376 ms  13.280 ms
+ 8  72.14.219.217 (72.14.219.217)  13.731 ms  14.031 ms  17.247 ms
+ 9  64.233.175.204 (64.233.175.204)  15.882 ms  22.242 ms 72.14.239.239 (72.14.239.239)  23.975 ms
+10  8.8.8.8 (8.8.8.8)  28.199 ms  28.147 ms  29.137 ms
+```
+Du bør nå ha en forståelse av hvordan man kan endre state i et image og lagre endringen. 
