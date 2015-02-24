@@ -5,10 +5,24 @@
 $ docker build -t jenkins_agent <path til docker file>
 ```
 
-## Kjør
+## Kjør med eksponert port
 ```sh
 $ docker run -d -P -p 31337:22 jenkins_agent
 ```
+
+## Kjør uten eksponert port om du vil linke containere
+```sh
+$ docker run -d --name jenkings_agent jenkins_agent
+```
+Denne kan da linkes inn i andre containere med argumentet link.
+```sh
+--link <name or id>:alias
+```
+For eksempel:
+```sh
+$ docker run -d -P --name jenkins_master --link jenkins_agent:jenkins_agent <someId>
+```
+Hosts fila vil da bli oppdatert med jenkins_agent pekende til ipen til den linka containeren. 
 
 ## Legge til slave
 For å legge til en agent i jenkins, åpne webgrensesnittet i nettleseren din. Og gjør følgende.
