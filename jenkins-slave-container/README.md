@@ -1,5 +1,6 @@
 # Legge til slave
 For å legge til en agent i jenkins, åpne webgrensesnittet i nettleseren din. Og gjør følgende.
+
 1. Velg Manage Jenkins
 2. Velg Manage Nodes
 3. Velg New Node
