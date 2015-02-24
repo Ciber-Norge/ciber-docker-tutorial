@@ -38,7 +38,7 @@ For å legge til en agent i jenkins, åpne webgrensesnittet i nettleseren din. Og 
 9. Legg inn username/password jenkins/jenkins i dette tilfellet.
 10. Klikk add.
 11. Velg Advanced...
-12. Endre port til porten som eksponerer ssh mot slave-image i docker.
+12. Endre port til porten som eksponerer ssh, eventuelt port 22 om du har linket container.
 13. Klikk save.
 
 ![bilde av jenkins slave](../bilder/jenkins_slave.PNG)
