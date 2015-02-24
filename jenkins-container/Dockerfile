@@ -25,8 +25,5 @@ RUN wget -q --no-check-certificate http://updates.jenkins-ci.org/latest/ssh-slav
 # for main web interface:
 EXPOSE 8080
 
-# will be used by attached slave agents:
-EXPOSE 50000
-
 CMD /etc/init.d/jenkins start && tail -F /var/log/jenkins/jenkins.log
 
