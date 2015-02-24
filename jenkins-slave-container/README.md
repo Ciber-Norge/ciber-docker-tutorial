@@ -1,14 +1,16 @@
-# Bygg
+#Jenkins-slave-container
+
+## Bygg
 ```sh
 $ docker build -t jenkins_agent <path til docker file>
 ```
 
-# Kjør
+## Kjør
 ```sh
 $ docker run -d -P -p 31337:22 jenkins_agent
 ```
 
-# Legge til slave
+## Legge til slave
 For å legge til en agent i jenkins, åpne webgrensesnittet i nettleseren din. Og gjør følgende.
 
 1. Velg Manage Jenkins
