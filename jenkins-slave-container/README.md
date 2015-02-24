@@ -19,7 +19,7 @@ For å legge til en agent i jenkins, åpne webgrensesnittet i nettleseren din. Og 
 4. Velg Dumb Slave og gi den et navn, f.eks UberSlave
 5. Klikk på OK.
 6. Legg inn /home/jenkins/ i Remote root directory. Det er dette som ble valgt som home directory for brukeren jenkins i image.
-7. Legg inn ipen hvor docker kjører i Host.
+7. Legg inn ipen hvor docker kjører i Host. Om du kjører linked containers så er dette navnet du brukte ved linking.
 8. Klikk Add siden av Credentials
 9. Legg inn username/password jenkins/jenkins i dette tilfellet.
 10. Klikk add.
