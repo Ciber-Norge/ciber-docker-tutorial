@@ -329,3 +329,75 @@ Vi kan nå starte en ny container basert på imaget vårt.
 ```
 ➜  ~  docker run -d -P peteabre/jenkins:v1
 ```
+###Container linking###
+Å eksponere port mappings er ikke den eneste måten containere kan kommunisere med hverandre på. Docker har også et linke system som lar deg linke flere containere sammen og sende informasjon mellom containere uten at porter er eksponert på vertsmaskinen. For å kunne linke containere så er man avhengig av at containerene har et navn. Dette har vi snakket om tidlere og kan gjøres med flagget ```--name```.
+
+Vi skal videre lage en ny nytt image som kjører en ssh-server. Dette lar jenkins containeren vår installere bygg-agent via ssh i den nye containeren. Nedenfor er en ```Dockerfile``` for å lage et image med ssh-tilgang.
+
+```
+FROM java:openjdk-7u65-jdk
+
+# install openssh
+RUN apt-get update && apt-get install -y openssh-server git
+
+# adduser 
+RUN useradd -d /home/jenkins -s /bin/bash -m jenkins
+
+# setter passord i klartekst sånn at alle ser hva det er.
+# Her burde nok en ssh key vært brukt isteden :)
+RUN echo 'jenkins:jenkins' | chpasswd
+
+# expose ssh
+EXPOSE 22
+
+# run sshd
+CMD ["/etc/init.d/ssh","start", "-D"]
+```
+
+Bygg det nye imaget og gi det et navn med kommandoen ```docker build -t <brukernavn>/jenkins-slave .```
+Start deretter en ny container med kommandoen:
+```sh
+➜  ~ docker run -d --name jenkins-slave <brukernavn>/jenkins-slave
+```
+
+Nå har vi startet en ny container som ikke har eksponert noen porter på vertsmaskinen. Verifiser at den kjører med kommandoen ```docker ps```.
+
+Så starter vi en ny jenkins container og linker denne med jenkins-slaven. 
+```sh
+➜  ~  docker run -d -P --name jenkins --link jenkins-slave:slave peteabre/jenkins
+```
+```--link``` flagget tar formen:
+```--link <navn eller id>:alias```
+Du får se hvordan alias blir brukt om litt. 
+Docker eksponerer tilkoblingsinformasjon for linkede containere på to måter:
+*Miljøvariabler
+*Ved å oppdatere /etc/hosts
+
+##Miljøvariabler
+Ved å starte en ny instans av jenkins containeren og kjøre kommandoen ```env``` så kan vi liste ut å se på variablene som blir satt.
+```sh
+➜  ~  docker run -d -P --name jenkins2 --link jenkins-slave:slave peteabre/jenkins env
+➜  ~  docker logs jenkins2
+```
+```
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=205dcf413371
+SLAVE_PORT=tcp://172.17.0.20:22
+SLAVE_PORT_22_TCP=tcp://172.17.0.20:22
+SLAVE_PORT_22_TCP_ADDR=172.17.0.20
+SLAVE_PORT_22_TCP_PORT=22
+SLAVE_PORT_22_TCP_PROTO=tcp
+SLAVE_NAME=/jenkins2/slave
+SLAVE_ENV_JAVA_VERSION=7u65
+JAVA_VERSION=7u65
+HOME=/root
+```
+Som du ser så har docker satt en del miljøvariabler som kan benyttes for å nå containeren man er linket til.
+##Oppdatere ```/etc/hosts```
+Docker oppdaterer som sagt ```/etc/hosts``` fila også. 
+For hver container man linker til så vil fila inneholde en rad
+```
+172.17.0.7  aed84ee21bde
+. . .
+172.17.0.5  slave
+```
