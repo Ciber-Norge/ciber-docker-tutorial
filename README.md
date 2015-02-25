@@ -251,4 +251,81 @@ traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
 Du bør nå ha en forståelse av hvordan man kan endre state i et image og lagre endringen. 
 
 ##Lage container basert på ```Dockerfile```
+Bruk av ```docker commit``` er en enkel måte å utvide et image med ny funksjonalitet. Men det er en lite smidig prosess og det er vanskelig og gjennskape det samme imaget på nytt i en utviklingsprosess der man ønsker å dele imaget på tvers av et team. Vi kan derfor bruke ```docker build``` i stedet. 
 
+For å kunne bruker ```docker build``` så trenger vi en ```Dockerfile```.
+
+Vi lager en katalog og en ```Dockerfile```.
+```sh
+➜  ~  mkdir jenkins
+➜  ~  cd jenkins
+➜  ~  touch Dockerfile
+```
+Hver instruksjon man legger inn vil lage et nytt lag i imaget. Av hensyn til ytelse og størrelse bør man forsøke og holde antall lag så lavt som mulig.
+
+Hver instruksjon prefikser et uttrykk. Instruksjonen er alltid skrevet i STORE bokstaver.
+```
+INSTRUKSJON uttrykk
+```
+>**Merk:** ```#``` brukes kommentarer.
+
+La oss se på en ```Dockerfile``` for å kjøre Jenkins.
+```
+FROM java:openjdk-7u65-jdk
+MAINTAINER Peter Breunig <peter.breunig@ciber.com>
+
+# install some tools needed
+RUN apt-get update && apt-get install -y wget git curl zip net-tools && rm -rf /var/lib/apt/lists/*
+
+# add key for jenkins repository
+RUN wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add -
+
+# append jenkins repository to sources.list
+RUN echo deb http://pkg.jenkins-ci.org/debian binary/ >> /etc/apt/sources.list
+
+RUN echo deb http://http.debian.net/debian jessie non-free >> /etc/apt/sources.list && echo deb http://http.debian.net/debian jessie-updates non-free >> /etc/apt/sources.list
+
+# install jenkins
+RUN apt-get update && apt-get install -y jenkins && apt-get install -y conserver-client && rm -rf /var/lib/apt/lists/* && touch /var/log/jenkins/jenkins.log
+
+# Jenkins home directoy is a volume, so configuration and build history
+# can be persisted and survive image upgrades
+VOLUME /var/lib/jenkins
+
+# download jenkins ssh slave plugin
+RUN wget -q --no-check-certificate http://updates.jenkins-ci.org/latest/ssh-slaves.hpi -P $JENKINS_HOME/plugins/
+
+# for main web interface:
+EXPOSE 8080
+
+CMD /etc/init.d/jenkins start && tail -F /var/log/jenkins/jenkins.log
+```
+
+Den første instruksjonen ```FROM``` forteller docker hvilket image vi skal bruke som kilde for vårt nye image. I dette tilfellet så baserer vi oss på et debian image med ferdig installert java-7u65 JDK.
+
+Neste instruksjon er ```MAINTAINER``` forteller hvem det er som vedlikeholder imaget.
+
+Så kommer en serie med ```RUN``` instruksjoner. En ```RUN```instruksjon kjører en kommando på "innsiden" av imaget. For eksempel installere pakker. Se kommentarene i fila over for hva hver enkel instruksjon gjør.
+
+```VOLUME``` er en instruksjon der man angir en path som kan mountes i containeren. Dvs hvis man ønsker og persistere data på utsiden av en container slik at man enkelt kan oppgradere versjon men samtidig beholde dataene når man starter en ny versjon så skal man benytte ```VOLUME```
+
+```EXPORT``` forteller docker hvilke porter som skal kunne eksponeres fra containere basert på imaget.
+
+Til slutt kommer en ```CMD``` instruksjon som forteller hvilken kommando docker skal gi videre til entrypointet i containeren. Dersom man ikke angir noe entrypoint så er standard entrypoint ```/bin/sh -c```
+Så når vi tidliere kjørte ```docker run -t -i ubuntu /bin/bash```så overskrev vi ```CMD``` for ubuntu imaget med /bin/bash. Fullstendig kommando som ble kjørt ble da ```/bin/sh -c /bin/bash```
+
+>**Merk:** Det finnes mange flere instruksjoner som er tilgjengelig for bruk i en ```Dockerfile```
+
+Så la oss bygge containeren vår ved hjelp av ```docker build```.
+
+```sh
+➜  ~  docker build -t peteabre/jenkins:v1 .
+```
+Output for kommandoen er såpass lang at den legges ikke inn her.
+
+Vi har brukt ```-t``` for å identifisere at imaget tilhører brukeren ```peteabre```, ligger i repoet ```jenkins``` og har tagget det med ```v1```
+
+Vi kan nå starte en ny container basert på imaget vårt.
+```
+➜  ~  docker run -d -P peteabre/jenkins:v1
+```
