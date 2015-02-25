@@ -401,3 +401,5 @@ For hver container man linker til så vil fila inneholde en rad
 . . .
 172.17.0.5  slave
 ```
+### Få jenkins til å installere byggagent på jenkins-slave
+Pek webbrowseren din mot den kjørende jenkins-containeren og få den til å installere slaven på den vha. ssh
