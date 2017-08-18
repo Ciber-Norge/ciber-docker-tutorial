@@ -18,7 +18,7 @@ Gratulerer du har startet din første kontainer. Ved hjelp av *docker run* komma
 $ sudo docker run hello-world
 ```
 Dette starter en container basert på imaget hello-world. Imaget inneholder instruksjoner om å kjøre en kommando som skriver ut teksten som kommer opp.
-##Starte en interaktiv container
+## Starte en interaktiv container
 La oss starte en ny container
 ```sh
 $ sudo docker run -t -i ubuntu /bin/bash
