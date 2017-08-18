@@ -8,7 +8,7 @@ $ docker run <navn på container>
 ```
 
 ## Hello world
-La oss prøve et par enkle eksempel:
+La oss prøve et par enkle eksempler:
 ```sh
 $ sudo docker run ubuntu /bin/echo 'Hei hå'
 ```
@@ -24,7 +24,7 @@ La oss starte en ny container
 $ sudo docker run -t -i ubuntu /bin/bash
 root@af8bae53bdd3:/#
 ```
-Her startet vi en kontainer basert på samme image som tidligere, men vi spesifiserte to flagg: *-t* og *-i*. *-i* kobler en tty-terminal sltil containeren og *-t* lar oss interagere med containeren ved å ta kontroll over (STDIN) containeren.
+Her startet vi en kontainer basert på samme image som tidligere, men vi spesifiserte to flagg: *-t* og *-i*. *-i* kobler en tty-terminal til containeren og *-t* lar oss interagere med containeren ved å ta kontroll over (STDIN) containeren.
 
 Vi har nå en kommandolinje tilgjengelig som vi kan kjøre kommandoer på inn i containeren. La oss kjøre noen kommandoer:
 ```sh
@@ -74,7 +74,7 @@ Kommandoen lister ut 3 viktige ting om hvert image:
 ## Lage vår første container
 Containere kan lages i hovedsak på to forskjellige måter. 
 * Starte opp en interaktiv container basert på et image for så å påføre containeren endringer ved å kjøre ulike kommandoer.
-* Lage en Dockerfile. Denne filen er på en måte en mal som docker bruker for å påføre endringer i en container for deg. Fordelen med denne metoden er at man enkelt kan gjenskape en container fra malen.
+* Lage en Dockerfile. Denne filen er en oppskrift som docker bruker for å påføre endringer i en container for deg. Fordelen med denne metoden er at man enkelt kan gjenskape en container fra Dockerfile.
 
 Vi skal lage en enkel container som kjører som en daemon, på samme måte som de aller fleste applikasjoner som kjøres ved hjelp av docker.
 
@@ -329,6 +329,28 @@ Vi kan nå starte en ny container basert på imaget vårt.
 ```
 ➜  ~  docker run -d -P peteabre/jenkins:v1
 ```
+
+Det er selvsagt flere som har laget docker images med jenkins fra før. Her er en Dockerfile som baserer seg på offisielle jenkins docker image.
+
+```
+FROM jenkinsci/jenkins:2.63
+MAINTAINER Øyvind Volden <oyvind.volden@ciber.no>
+USER root
+RUN apt-get update && apt-get install -y maven && apt-get install -y openjdk-8-jre
+USER jenkins
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN /usr/local/bin/install-plugins.sh $(cat /usr/share/jenkins/ref/plugins.txt | tr '\n' ' ')
+```
+
+Som du ser så baserer denne seg på jenkinsci/jenkins istedenfor java:openjdk. Maven og openjdk blir installert for å kunne bygge et maven prosjekt i jenkins. Eventuelle plugins er flyttet ut til en egen plugins.txt fil hvor plugins beskrives som navn:versjon skilt av linjeskift.
+F.eks:
+```
+$ cat plugins.txt 
+git:3.3.0
+workflow-aggregator:2.5
+
+```
+
 ###Container linking###
 Å eksponere port mappings er ikke den eneste måten containere kan kommunisere med hverandre på. Docker har også et linke system som lar deg linke flere containere sammen og sende informasjon mellom containere uten at porter er eksponert på vertsmaskinen. For å kunne linke containere så er man avhengig av at containerene har et navn. Dette har vi snakket om tidlere og kan gjøres med flagget ```--name```.
 
